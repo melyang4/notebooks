@@ -1,6 +1,6 @@
 
-R version 3.4.1 (2017-06-30) -- "Single Candle"
-Copyright (C) 2017 The R Foundation for Statistical Computing
+R version 3.5.1 (2018-07-02) -- "Feather Spray"
+Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -29,21 +29,31 @@ The following object is masked from ‘package:stats’:
 
     lowess
 
+> library(RColorBrewer)
 > pd="/mnt/solexa/mel_yang/aPlateau/rev_072418/outf3/"
 > fh="UPA16.f3."
-> name="aTib_aTib_Mbuti"
+> name="aTib+subEA_aTib+subEA_Mbuti"
+> #name="aTib+EA_aTib+EA_Mbuti"
+> #name="aTib_aTib_Mbuti"
 > myfile=read.csv(paste(pd,fh,name,".csv",sep=""),sep="\t",header=T)
 > 
 > mydat=subset(myfile, select = -c(X) )
 > rownames(mydat)=colnames(mydat)
-> pdf(paste(pd,fh,name,".pdf",sep=""))
+> #pdf(paste(pd,fh,name,".pdf",sep=""))
+> png(paste(pd,fh,name,".png",sep=""))
 > #mydat[is.na(mydat)] <- 0
 > mydat=data.matrix(mydat)
-> heatmap.2(mydat,symkey=FALSE, trace="none")
+> mycolors=colorRampPalette(c("brown","red","orange","light yellow", "medium sea green","royal blue"))(n = 299)
+> mycolors=colorRampPalette(c("red","orange","yellow"))(n = 299)
+> mycolors=rev(mycolors)
+> v=heatmap.2(mydat,symkey=FALSE,trace="none",dendrogram="none",cexRow=0.8,cexCol=0.8,margins=c(7,7),col=mycolors)
+> x=rownames(mydat)[v$rowInd]
+> mynames=data.frame(x)
+> write.table(mynames,paste(pd,fh,name,".sorted.txt",sep=""),sep="\t",row.names=F,quote=F)
 > dev.off()
 null device 
           1 
 > 
 > proc.time()
    user  system elapsed 
-  0.594   0.036   0.710 
+  0.789   0.065   0.996 
